@@ -152,6 +152,27 @@
   :ensure t
   :require t
   
+  :preface
+  ;; バイトコンパイル時のための関数宣言
+  (declare-function meow-yank "meow")  ;; meow-yankを事前に宣言
+  
+  ;; クリップボードの内容が行全体の場合のみ下に貼り付けるスマート関数
+  (defun smart-yank ()
+    "クリップボードの内容が行全体の場合はカーソル行の下に貼り付け、
+それ以外の場合は通常の meow-yank を実行します。"
+    (interactive)
+    (let ((clipboard-text (current-kill 0)))
+      (if (and clipboard-text
+               (string-match-p "\n$" clipboard-text)  ;; 改行で終わる場合は行全体とみなす
+               (not (string-match-p "\n.+\n" clipboard-text))) ;; 複数行の中間に改行がない場合
+          ;; 行全体の場合は下に貼り付け
+          (progn
+            (end-of-line)
+            (newline)
+            (meow-yank))
+        ;; それ以外は通常の貼り付け
+        (meow-yank))))
+  
   :custom
   (meow-use-clipboard . t)
   (meow-selection-command-fallback . '((meow-change . meow-change-char)
@@ -304,7 +325,7 @@ jjが入力された場合はノーマルモードに戻る"
        '("m" . meow-join)
        '("n" . meow-search)
        '("o" . meow-open-below)
-       '("p" . meow-yank)
+       '("p" . smart-yank)  ;; スマート貼り付け関数を割り当て
        '("q" . meow-goto-line)
        '("r" . meow-replace)
        '("t" . meow-till)
