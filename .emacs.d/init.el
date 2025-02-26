@@ -155,6 +155,8 @@
   :preface
   ;; バイトコンパイル時のための関数宣言
   (declare-function meow-yank "meow")  ;; meow-yankを事前に宣言
+  (declare-function meow-insert "meow")  ;; 追加: meow-insert関数の宣言
+  (declare-function meow-normal-mode-p "meow")  ;; 追加: meow-normal-mode-p関数の宣言
   
   ;; クリップボードの内容が行全体の場合のみ下に貼り付けるスマート関数
   (defun smart-yank ()
@@ -172,6 +174,23 @@
             (meow-yank))
         ;; それ以外は通常の貼り付け
         (meow-yank))))
+  
+  ;; Vimのaコマンドと同様の機能を実装するカスタム関数
+  (defun my-vim-append ()
+    "カーソルの後ろに移動してインサートモードに入る（Vimのaコマンド相当）"
+    (interactive)
+    (when (meow-normal-mode-p)
+      (unless (eolp)  ;; 行末でない場合のみ前進
+        (forward-char 1))
+      (meow-insert)))
+  
+  ;; VimのAコマンド（行末に移動してインサート）と同様の機能
+  (defun my-vim-append-end-of-line ()
+    "行末に移動してインサートモードに入る（VimのAコマンド相当）"
+    (interactive)
+    (when (meow-normal-mode-p)
+      (end-of-line)
+      (meow-insert)))
   
   :custom
   (meow-use-clipboard . t)
@@ -258,7 +277,7 @@ jjが入力された場合はノーマルモードに戻る"
         '("s-v" . meow-yank)
         '("j" . my-meow-insert-j-handler))
       
-      ;; normalステートのキー設定（重複を削除）
+      ;; normalステートのキー設定
       (meow-normal-define-key
        ;; vimライクなコマンド
        '(":" . meow-ex-command)
@@ -276,7 +295,7 @@ jjが入力された場合はノーマルモードに戻る"
 
        ;; ページ移動
        '("g g" . beginning-of-buffer)
-       '("G" . end-of-buffer)  ;; 'g'から'G'に修正
+       '("G" . end-of-buffer)
 
        ;; 基本コマンド
        '(", u" . meow-universal-argument)
@@ -297,7 +316,7 @@ jjが入力された場合はノーマルモードに戻る"
        '("s j" . windmove-down)
        '("s k" . windmove-up)
 
-       ;; ベースレイアウト（重複を削除）
+       ;; ベースレイアウト
        '("0" . meow-expand-0)
        '("9" . meow-expand-9)
        '("8" . meow-expand-8)
@@ -312,10 +331,11 @@ jjが入力された場合はノーマルモードに戻る"
        '(";" . meow-reverse)
        '("[" . meow-beginning-of-thing)
        '("]" . meow-end-of-thing)
-       '("a" . meow-append)
-       '("b" . switch-to-buffer)  ;; どちらか一方のみ残す
-       '("d" . meow-kill-whole-line)  ;; どちらか一方のみ残す
-       '("e" . meow-next-symbol)  ;; どちらか一方のみ残す
+       '("a" . my-vim-append)  ;; Vimのaコマンド相当の関数に変更
+       '("A" . my-vim-append-end-of-line)  ;; VimのAコマンド相当の関数を追加
+       '("b" . switch-to-buffer)
+       '("d" . meow-kill-whole-line)
+       '("e" . meow-next-symbol)
        '("f" . find-file)
        '("h" . meow-left)
        '("i" . meow-insert)
@@ -344,6 +364,7 @@ jjが入力された場合はノーマルモードに戻る"
        '("/" . meow-visit)))
     )
   
+  ;; meowのセットアップと有効化
   (meow-setup)
   (meow-global-mode 1))
 
