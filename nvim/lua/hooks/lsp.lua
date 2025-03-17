@@ -2,8 +2,8 @@ local keymap = vim.keymap.set
 
 require("lazydev").setup()
 
-require("ddc_source_lsp_setup").setup()
-local capabilities = require("ddc_source_lsp").make_client_capabilities()
+-- require("ddc_source_lsp_setup").setup()
+-- local capabilities = require("ddc_source_lsp").make_client_capabilities()
 
 local lspconfig = require("lspconfig")
 

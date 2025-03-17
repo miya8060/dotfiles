@@ -63,50 +63,6 @@ keymap('x', 'y', 'mzy`z', opts)
 keymap('x', '<', '<gv', opts)
 keymap('x', '>', '>gv', opts)
 keymap('n', 'U', '<C-r>', opts)
--- keymap('n', 'gd', '<cmd>GitDiff<cr>', opts)
--- keymap("n", "S", "<cmd>FuzzyMotion<CR>", opts)
-
--- hjkl
--- local mappings = {
---         n = {
---                 ['<C-h>'] = 'h',
---                 ['<C-j>'] = 'j',
---                 ['<C-k>'] = 'k',
---                 ['<C-l>'] = 'l',
---         },
---         i = {
---                 ['<C-h>'] = '<Left>',
---                 ['<C-j>'] = '<Down>',
---                 ['<C-k>'] = '<Up>',
---                 ['<C-l>'] = '<Right>',
---         }
--- }
---
--- for mode, maps in pairs(mappings) do
---         for lhs, rhs in pairs(maps) do
---                 keymap(mode, lhs, rhs, opts)
---         end
--- end
-
--- w3m.vim
-keymap('n', '<leader>w', ':W3mVSplit google ', opts)
-vim.api.nvim_create_autocmd("FileType", {
-        pattern = "w3m",
-        callback = function()
-                keymap('n', '<CR>', '<Plug>(w3m-click)', opts)
-                keymap('n', '<S-CR> ', '<Plug>(w3m-shift-click)', opts)
-                keymap('n', '<C-S-CR> ', '<Plug>(w3m-shift-ctrl-click)', opts)
-                keymap('n', '=', '<Plug>(w3m-show-link)', opts)
-                keymap('n', '/', '<Plug>(w3m-search-start)', opts)
-                keymap('n', '<m-d>', '<Plug>(w3m-address-bar)', opts)
-                keymap('n', '<leader>h', '<Plug>(w3m-back)', opts)
-                keymap('n', '<leader>l', '<Plug>(w3m-forward)', opts)
-                keymap('n', '<leader>s', '<Plug>(w3m-toggle-syntax)', opts)
-                keymap('n', '<leader>c', '<Plug>(w3m-toggle-use-cookie)', opts)
-                keymap('n', '<C-n>', '<Plug>(w3m-next-link)', opts)
-                keymap('n', '<C-p>', '<Plug>(w3m-prev-link)', opts)
-        end
-})
 
 -- Gin shortcuts
 keymap('n', 'S', '<cmd>GinStatus<CR>', opts)
@@ -120,14 +76,6 @@ vim.api.nvim_create_autocmd("FileType", {
                 keymap('n', 'q', '<cmd>bdelete<CR>', opts)
         end
 })
-
--- test
--- vim.keymap.set("n", "<leader>k", function() print("Hop!") end)
-
--- Cody
--- keymap("n", "<leader>c", ":<C-u>CodyToggle<CR>", opts)
--- keymap("v", "<leader>ct", ":CodyTask ", opts)
--- keymap("v", "<leader>ca", ":CodyAsk ", opts)
 
 -- GitDiff
 keymap('n', '<Leader>d', ':GitDiff<CR>', opts)

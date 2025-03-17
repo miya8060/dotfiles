@@ -1,9 +1,9 @@
 -- colorscheme
-vim.api.nvim_create_autocmd("VimEnter", {
-        callback = function()
-                vim.cmd("colorscheme gruvbox")
-        end
-})
+-- vim.api.nvim_create_autocmd("VimEnter", {
+--         callback = function()
+--                 vim.cmd("colorscheme gruvbox")
+--         end
+-- })
 
 -- Each time a file is opened, automatically navigate to the directory where the file resides
 vim.api.nvim_create_autocmd("BufEnter", {

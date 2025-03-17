@@ -337,6 +337,7 @@ jjが入力された場合はノーマルモードに戻る"
        '("d" . meow-kill-whole-line)
        '("e" . meow-next-symbol)
        '("f" . find-file)
+       ;; '("G" . meow-grab)
        '("h" . meow-left)
        '("i" . meow-insert)
        '("j" . meow-next)
