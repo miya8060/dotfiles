@@ -11,14 +11,6 @@ require("gruvbox").setup({
 })
 """
 
-# [[plugins]]
-# repo = "catppuccin/nvim"
-# on_event = ['BufRead', 'CursorHold']
-# lua_source = """
-# require("catppuccin").setup({})
-# vim.cmd.colorscheme "catppuccin"
-# """
-
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter'
 on_event = ['BufRead', 'CursorHold']
@@ -36,7 +28,18 @@ require'nvim-treesitter.configs'.setup {
 repo = "numToStr/Comment.nvim"
 on_event = ['BufRead', 'CursorHold']
 lua_source = """
-require('Comment').setup()
+require('Comment').setup({
+  pre_hook = require('ts_context_commentstring.integrations.comment_nvim').create_pre_hook(),
+})
+"""
+
+[[plugins]]
+repo = "JoosepAlviste/nvim-ts-context-commentstring"
+on_event = ['BufRead', 'CursorHold']
+lua_source = """
+require('ts_context_commentstring').setup {
+  enable_autocmd = false,
+}
 """
 
 [[plugins]]
