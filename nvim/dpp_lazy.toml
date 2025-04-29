@@ -1,23 +1,23 @@
-# [[plugins]]
-# repo = "ellisonleao/gruvbox.nvim"
-# on_event = ['BufRead', 'CursorHold']
-# lua_source = """
-# require("gruvbox").setup({
-#   contrast = "soft",
-#   transparent_mode = true,
-#   palette_overrides = {
-#     bright_green = "#98971a",
-#   },
-# })
-# """
-
 [[plugins]]
-repo = "catppuccin/nvim"
+repo = "ellisonleao/gruvbox.nvim"
 on_event = ['BufRead', 'CursorHold']
 lua_source = """
-require("catppuccin").setup({})
-vim.cmd.colorscheme "catppuccin"
+require("gruvbox").setup({
+  contrast = "soft",
+  transparent_mode = true,
+  palette_overrides = {
+    bright_green = "#98971a",
+  },
+})
 """
+
+# [[plugins]]
+# repo = "catppuccin/nvim"
+# on_event = ['BufRead', 'CursorHold']
+# lua_source = """
+# require("catppuccin").setup({})
+# vim.cmd.colorscheme "catppuccin"
+# """
 
 [[plugins]]
 repo = 'nvim-treesitter/nvim-treesitter'
