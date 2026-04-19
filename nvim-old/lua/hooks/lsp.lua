@@ -31,58 +31,58 @@ for _, name in ipairs(servers) do
 end
 
 -- LSP settings
-local function on_attach(client, bufnr)
-        local opts = { noremap = true, silent = true, buffer = bufnr }
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-end
+-- local function on_attach(client, bufnr)
+--         local opts = { noremap = true, silent = true, buffer = bufnr }
+--         vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+--         vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+-- end
 
 -- Denoの設定（特定のプロジェクトディレクトリのみで有効）
-lspconfig.denols.setup({
-        root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc", "deps.ts"),
-        init_options = {
-                lint = true,
-                unstable = true,
-                suggest = {
-                        imports = {
-                                hosts = {
-                                        ["https://deno.land"] = true,
-                                        ["https://x.nest.land"] = true,
-                                        ["https://crux.land"] = true,
-                                },
-                        },
-                },
-        },
-        on_attach = function(client, bufnr)
-                -- Denoが有効な場合、TypeScriptサーバーを無効化
-                if client.name == "denols" then
-                        -- 現在のバッファについているtsserverを無効化
-                        for _, other_client in pairs(vim.lsp.get_active_clients()) do
-                                if other_client.name == "ts_ls" and other_client.id ~= client.id then
-                                        other_client.stop()
-                                end
-                        end
-                end
-                -- on_attachの共通処理を呼び出す
-                on_attach(client, bufnr)
-        end,
-        filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-})
+-- lspconfig.denols.setup({
+--         root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc", "deps.ts"),
+--         init_options = {
+--                 lint = true,
+--                 unstable = true,
+--                 suggest = {
+--                         imports = {
+--                                 hosts = {
+--                                         ["https://deno.land"] = true,
+--                                         ["https://x.nest.land"] = true,
+--                                         ["https://crux.land"] = true,
+--                                 },
+--                         },
+--                 },
+--         },
+--         on_attach = function(client, bufnr)
+--                 -- Denoが有効な場合、TypeScriptサーバーを無効化
+--                 if client.name == "denols" then
+--                         -- 現在のバッファについているtsserverを無効化
+--                         for _, other_client in pairs(vim.lsp.get_active_clients()) do
+--                                 if other_client.name == "ts_ls" and other_client.id ~= client.id then
+--                                         other_client.stop()
+--                                 end
+--                         end
+--                 end
+--                 -- on_attachの共通処理を呼び出す
+--                 on_attach(client, bufnr)
+--         end,
+--         filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
+-- })
 
 -- TypeScriptの設定（Denoプロジェクト以外で有効）
-lspconfig.ts_ls.setup({
-        root_dir = function(fname)
-                -- Denoプロジェクトではないディレクトリでのみtsサーバーを起動
-                local is_deno = lspconfig.util.root_pattern("deno.json", "deno.jsonc", "deps.ts")(fname)
-                if is_deno then
-                        return nil
-                end
-                return lspconfig.util.root_pattern("tsconfig.json", "package.json", "jsconfig.json", ".git")(fname)
-                    or vim.fn.getcwd()
-        end,
-        on_attach = on_attach,
-        filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
-})
+-- lspconfig.ts_ls.setup({
+--         root_dir = function(fname)
+--                 -- Denoプロジェクトではないディレクトリでのみtsサーバーを起動
+--                 local is_deno = lspconfig.util.root_pattern("deno.json", "deno.jsonc", "deps.ts")(fname)
+--                 if is_deno then
+--                         return nil
+--                 end
+--                 return lspconfig.util.root_pattern("tsconfig.json", "package.json", "jsconfig.json", ".git")(fname)
+--                     or vim.fn.getcwd()
+--         end,
+--         on_attach = on_attach,
+--         filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
+-- })
 
 -- html
 lspconfig.html.setup {

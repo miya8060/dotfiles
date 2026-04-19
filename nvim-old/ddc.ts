@@ -58,6 +58,7 @@ export class Config extends BaseConfig {
 					enableAdditionalTextEdit: true,
 					sorters: ["sorter_lsp-kind"],
 					kindLabels: { "Class": "c" },
+                                        bufnr: '%',
 				},
 			},
 			postFilters: ["sorter_head"],
