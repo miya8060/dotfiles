@@ -30,6 +30,10 @@ abbr dcr docker compose exec app ./build/program
 alias dsstore "find . -name '.DS_Store' -type f -ls -delete"
 command -qv nvim && alias v nvim
 
+# ccusage — Claude Code usage tracker (https://github.com/ryoppippi/ccusage)
+alias ccu 'npx ccusage@latest'
+alias ccub 'npx ccusage@latest blocks'
+
 bind \<l peco-src
 
 set -gx EDITOR nvim
