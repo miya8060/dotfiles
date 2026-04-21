@@ -7,7 +7,6 @@ export class Config extends BaseConfig {
 		args.contextBuilder.patchGlobal({
 			ui: "pum",
 			sources: [
-				"copilot",
 				"lsp",
 				"around",
 				"vsnip",
@@ -15,13 +14,6 @@ export class Config extends BaseConfig {
 				"skkeleton",
 			],
 			sourceOptions: {
-				"copilot": {
-					mark: "[copilot]",
-					matchers: [],
-					minAutoCompleteLength: 0,
-					isVolatile: true,
-				},
-
 				"lsp": {
 					dup: "keep",
 					mark: "[lsp]",

@@ -1,13 +1,12 @@
 [[plugins]]
-repo = "ellisonleao/gruvbox.nvim"
+repo = "rose-pine/neovim"
+name = "rose-pine"
 on_event = ['BufRead', 'CursorHold']
 lua_source = """
-require("gruvbox").setup({
-  contrast = "soft",
-  transparent_mode = true,
-  palette_overrides = {
-    bright_green = "#98971a",
-  },
+require("rose-pine").setup({
+  variant = "moon",
+  disable_background = true,
+  disable_float_background = true,
 })
 """
 
@@ -65,10 +64,6 @@ repo = "machakann/vim-sandwich"
 on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]
-repo = 'nvim-lua/plenary.nvim'
-on_source = ['sg.nvim']
-
-[[plugins]]
 repo = "simeji/winresizer"
 on_event = ['BufRead', 'CursorHold']
 hook_source = '''
@@ -123,18 +118,6 @@ require("hooks/insx")
 
 [[plugins]]
 repo = "lambdalisue/vim-gin"
-on_event = ['BufRead', 'CursorHold']
-
-[[plugins]]
-repo = "sourcegraph/sg.nvim"
-on_event = ['BufRead', 'CursorHold']
-lua_source = """
-require('sg').setup({
-})
-"""
-
-[[plugins]]
-repo = "github/copilot.vim"
 on_event = ['BufRead', 'CursorHold']
 
 [[plugins]]

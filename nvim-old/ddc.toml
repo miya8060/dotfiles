@@ -61,10 +61,6 @@ repo = "uga-rosa/ddc-source-lsp-setup"
 on_source = 'nvim-lspconfig'
 
 [[plugins]]
-repo = "Shougo/ddc-source-copilot"
-on_source = 'ddc.vim'
-
-[[plugins]]
 repo = 'uga-rosa/ddc-source-vsnip'
 on_source = 'ddc.vim'
 
@@ -88,14 +84,6 @@ vim.g.vsnip_snippet_dir = vim.fn.expand("~/.cache/dpp/repos/github.com/rafamadri
 [[plugins]]
 repo = 'rafamadriz/friendly-snippets'
 on_source = 'ddc.vim'
-
-# copilot
-[[plugins]]
-repo = "github/copilot.vim"
-on_source = 'ddc.vim'
-hook_source = '''
-let g:copilot_no_maps = v:true
-'''
 
 # lsp-doc_preview
 [[plugins]]
