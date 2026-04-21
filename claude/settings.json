@@ -68,6 +68,16 @@
           }
         ]
       }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "msg=$(jq -r '.message // \"確認が必要です\"'); osascript -e 'on run argv' -e 'display notification (item 1 of argv) with title \"Claude Code\" subtitle \"確認が必要です\" sound name \"Funk\"' -e 'end run' -- \"$msg\" 2>/dev/null || true"
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
