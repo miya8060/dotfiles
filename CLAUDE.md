@@ -12,11 +12,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 作業ツリー上にはこれらのディレクトリが **存在する**（ローカルの実設定として機能している）が、**コミットには含まれない**。ファイルを編集する際は `git ls-files` で tracked かを必ず確認すること。未追跡のディレクトリに変更を加えても差分には出ない。
 
-追跡されている設定は実質的に `nvim/` と `alacritty/` と `.emacs.d/init.el` のみ。
+追跡されている設定は実質的に `nvim/` と `alacritty/` と `claude/` と `.emacs.d/init.el` のみ。
 
 ## デプロイ方法
 
-このリポジトリ自体に symlink 配置スクリプトは含まれていない。各ディレクトリは手動で `~/.config/` 配下にリンクされている前提（例: `nvim/` → `~/.config/nvim/`、`alacritty/` → `~/.config/alacritty/`）。
+このリポジトリ自体に symlink 配置スクリプトは含まれていない。各ディレクトリ / ファイルは手動で配置されている前提:
+
+- `nvim/` → `~/.config/nvim/`（ディレクトリリンク）
+- `alacritty/` → `~/.config/alacritty/`（ディレクトリリンク）
+- `claude/settings.json` → `~/.claude/settings.json`（ファイル単位リンク）
+- `claude/statusline.sh` → `~/.claude/statusline.sh`（ファイル単位リンク）
+
+`~/.claude/` 配下には `projects/`（会話履歴・auto-memory）、`sessions/`、`history.jsonl` など動的・機密ファイルが混在するため、ディレクトリ単位ではなく **ユーザーが手書きするファイルだけを個別リンク** する方針。
 
 ## Neovim 設定のアーキテクチャ
 

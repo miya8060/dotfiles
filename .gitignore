@@ -4,7 +4,6 @@
 /skhd/
 /github-copilot/
 /nvim/startuptime.log
-/nvim-old/startuptime.log
 # 自動生成される一時ファイル
 auto-save-list/
 backup/
