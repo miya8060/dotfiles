@@ -3,25 +3,5 @@
 /yabai/
 /skhd/
 /github-copilot/
+/.emacs.d/
 /nvim/startuptime.log
-# 自動生成される一時ファイル
-auto-save-list/
-backup/
-*~
-\#*\#
-.\#*
-*.elc
-
-# パッケージマネージャー関連
-elpa/
-elpaca/
-
-# 履歴・キャッシュ関連
-savehist
-eshell/
-url/
-var/
-
-# その他
-tutorial/
-tree-sitter/

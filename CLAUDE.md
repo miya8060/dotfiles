@@ -8,11 +8,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `/fish/`, `/yabai/`, `/tmux/`, `/skhd/`, `/github-copilot/`
 - `/nvim/startuptime.log`
-- `.emacs.d` 配下の自動生成物（`elpa/`, `elpaca/`, `savehist`, `eshell/`, `url/`, `var/`, `tree-sitter/` 等）
 
 作業ツリー上にはこれらのディレクトリが **存在する**（ローカルの実設定として機能している）が、**コミットには含まれない**。ファイルを編集する際は `git ls-files` で tracked かを必ず確認すること。未追跡のディレクトリに変更を加えても差分には出ない。
 
-追跡されている設定は実質的に `nvim/` と `alacritty/` と `claude/` と `.emacs.d/init.el` のみ。
+追跡されている設定は実質的に `nvim/` と `alacritty/` と `claude/` のみ。
 
 ## デプロイ方法
 
