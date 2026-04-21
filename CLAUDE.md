@@ -4,14 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## リポジトリの性質
 
-個人用の dotfiles リポジトリ。macOS 環境を想定（`alacritty` + `tmux` + `fish`、`skhd`/`yabai` によるウィンドウ管理）。Git で管理しているのは一部のみで、`.gitignore` で以下が **意図的に除外** されている:
+個人用の dotfiles リポジトリ。macOS 環境を想定（`alacritty` + `tmux` + `fish`、`skhd`/`yabai` によるウィンドウ管理）。`.gitignore` で以下が **意図的に除外** されている:
 
-- `/fish/`, `/yabai/`, `/skhd/`, `/github-copilot/`
-- `/nvim/startuptime.log`
+- `/github-copilot/` — 認証情報を含むため
+- `/.emacs.d/` — Emacs から移行済みで管理対象外
+- `/nvim/startuptime.log` — 計測ログ
+- `/fish/fish_variables` — fish が自動で書き換える universal variable の保存先
+- `fish/functions/` 配下の fisher 管理ファイル（`fisher.fish`、bobthefish / z / fzf / plugin-peco 由来の関数群）— `fish_plugins` に列挙されており `fisher update` で再生成可能なため。手書きの関数（`fzf_change_directory.fish`、`ide.fish`、`peco-src.fish` など）は追跡対象。
 
-作業ツリー上にはこれらのディレクトリが **存在する**（ローカルの実設定として機能している）が、**コミットには含まれない**。ファイルを編集する際は `git ls-files` で tracked かを必ず確認すること。未追跡のディレクトリに変更を加えても差分には出ない。
-
-追跡されている設定は実質的に `nvim/`、`alacritty/`、`tmux/`、`claude/` のみ。
+追跡されている設定は `nvim/`、`alacritty/`、`tmux/`、`fish/`、`skhd/`、`yabai/`、`claude/`。`claude/` のみファイル単位でリンクしており、それ以外はディレクトリ単位リンクが前提。
 
 ## デプロイ方法
 
@@ -20,6 +21,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `nvim/` → `~/.config/nvim/`（ディレクトリリンク）
 - `alacritty/` → `~/.config/alacritty/`（ディレクトリリンク）
 - `tmux/` → `~/.config/tmux/`（ディレクトリリンク）
+- `fish/` → `~/.config/fish/`（ディレクトリリンク）
+- `skhd/` → `~/.config/skhd/`（ディレクトリリンク）
+- `yabai/` → `~/.config/yabai/`（ディレクトリリンク）
 - `claude/settings.json` → `~/.claude/settings.json`（ファイル単位リンク）
 - `claude/statusline.sh` → `~/.claude/statusline.sh`（ファイル単位リンク）
 

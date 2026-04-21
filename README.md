@@ -4,13 +4,16 @@ macOS 向けの個人用 dotfiles。ターミナル環境（`alacritty` + `tmux`
 
 ## 構成
 
-Git で追跡しているのは以下のみ:
+Git で追跡しているのは以下:
 
 | パス | 役割 | 配置先 |
 | --- | --- | --- |
 | `alacritty/` | ターミナルエミュレータ設定（Catppuccin Mocha テーマ） | `~/.config/alacritty/` （ディレクトリリンク） |
 | `nvim/` | Neovim 設定（dpp.vim ベース、Lua + TOML + TypeScript） | `~/.config/nvim/` （ディレクトリリンク） |
 | `tmux/` | tmux 設定とステータスライン | `~/.config/tmux/` （ディレクトリリンク） |
+| `fish/` | fish シェル設定・プラグイン・関数 | `~/.config/fish/` （ディレクトリリンク） |
+| `skhd/` | skhd のキーバインド設定 | `~/.config/skhd/` （ディレクトリリンク） |
+| `yabai/` | yabai のウィンドウ管理設定 | `~/.config/yabai/` （ディレクトリリンク） |
 | `claude/settings.json` | Claude Code の設定 | `~/.claude/settings.json` （ファイル単位リンク） |
 | `claude/statusline.sh` | Claude Code のステータスラインスクリプト | `~/.claude/statusline.sh` （ファイル単位リンク） |
 
@@ -20,9 +23,11 @@ Git で追跡しているのは以下のみ:
 
 作業ツリーには存在するがコミット対象から外しているもの:
 
-- `fish/`, `yabai/`, `skhd/`, `github-copilot/` — ローカルの実設定として機能するが公開しない
+- `github-copilot/` — 認証情報を含むため公開しない
 - `nvim/startuptime.log` — Neovim 起動時間の計測ログ
 - `.emacs.d/` — 以前は `init.el` のみ追跡していたが、Emacs から移行したため管理対象外
+- `fish/functions/` 配下の fisher 管理ファイル — `fish_plugins` から `fisher update` で再取得できるため（`fzf_change_directory.fish` など手書きの関数は追跡する）
+- `fish/fish_variables` — fish が自動で書き換える universal variable の保存先
 
 詳細は `.gitignore` を参照。
 
@@ -54,6 +59,11 @@ ln -sfn "$DOTFILES/nvim" "$HOME/.config/nvim"
 # tmux
 ln -sfn "$DOTFILES/tmux" "$HOME/.config/tmux"
 
+# fish / skhd / yabai
+ln -sfn "$DOTFILES/fish" "$HOME/.config/fish"
+ln -sfn "$DOTFILES/skhd" "$HOME/.config/skhd"
+ln -sfn "$DOTFILES/yabai" "$HOME/.config/yabai"
+
 # claude code
 mkdir -p "$HOME/.claude"
 ln -sfn "$DOTFILES/claude/settings.json" "$HOME/.claude/settings.json"
@@ -83,6 +93,15 @@ Neovim 初回起動時に `:DppInstall` でプラグインを clone する。
 ├── claude/
 │   ├── settings.json      # Claude Code の設定
 │   └── statusline.sh      # ステータスラインスクリプト
+├── fish/
+│   ├── config.fish        # エントリポイント
+│   ├── fish_plugins       # fisher で管理するプラグイン一覧
+│   ├── conf.d/            # 自動読み込みされる設定スニペット
+│   └── functions/         # ユーザー定義関数（fisher 由来のファイルは .gitignore で除外）
+├── skhd/
+│   └── skhdrc             # skhd のキーバインド
+├── yabai/
+│   └── yabairc            # yabai のウィンドウ管理ルール
 ├── nvim/
 │   ├── init.lua           # エントリポイント
 │   ├── dpp.{toml,ts}      # dpp 本体 + denops の設定
