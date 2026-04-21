@@ -6,12 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 個人用の dotfiles リポジトリ。macOS 環境を想定（`alacritty` + `tmux` + `fish`、`skhd`/`yabai` によるウィンドウ管理）。Git で管理しているのは一部のみで、`.gitignore` で以下が **意図的に除外** されている:
 
-- `/fish/`, `/yabai/`, `/tmux/`, `/skhd/`, `/github-copilot/`
+- `/fish/`, `/yabai/`, `/skhd/`, `/github-copilot/`
 - `/nvim/startuptime.log`
 
 作業ツリー上にはこれらのディレクトリが **存在する**（ローカルの実設定として機能している）が、**コミットには含まれない**。ファイルを編集する際は `git ls-files` で tracked かを必ず確認すること。未追跡のディレクトリに変更を加えても差分には出ない。
 
-追跡されている設定は実質的に `nvim/` と `alacritty/` と `claude/` のみ。
+追跡されている設定は実質的に `nvim/`、`alacritty/`、`tmux/`、`claude/` のみ。
 
 ## デプロイ方法
 
@@ -19,6 +19,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `nvim/` → `~/.config/nvim/`（ディレクトリリンク）
 - `alacritty/` → `~/.config/alacritty/`（ディレクトリリンク）
+- `tmux/` → `~/.config/tmux/`（ディレクトリリンク）
 - `claude/settings.json` → `~/.claude/settings.json`（ファイル単位リンク）
 - `claude/statusline.sh` → `~/.claude/statusline.sh`（ファイル単位リンク）
 
