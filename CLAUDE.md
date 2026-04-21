@@ -14,57 +14,58 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 追跡されている設定は実質的に `nvim/` と `alacritty/` と `.emacs.d/init.el` のみ。
 
-`nvim-old/` は旧 dpp.vim 構成のバックアップ（`nvim/` からのリネームとして git に記録されているが未コミット）。LazyVim への切り替え確認が済んだら整理予定の退避ディレクトリ。
-
 ## デプロイ方法
 
 このリポジトリ自体に symlink 配置スクリプトは含まれていない。各ディレクトリは手動で `~/.config/` 配下にリンクされている前提（例: `nvim/` → `~/.config/nvim/`、`alacritty/` → `~/.config/alacritty/`）。
 
 ## Neovim 設定のアーキテクチャ
 
-**LazyVim**（`folke/lazy.nvim` 上の preset ディストリビューション）をベースにした Lua 設定。プラグインマネージャは lazy.nvim。
+**dpp.vim**（`Shougo/dpp.vim` + `vim-denops/denops.vim`）ベースの Lua + TOML + TypeScript 構成。プラグイン管理・補完（ddc.vim）・ファジーファインダ（ddu.vim）が Shougo 系ツールで揃えられている。Deno が必須（denops.vim が要求）。
 
 ### ロードフロー
 
-1. `nvim/init.lua` が `vim.loader` を有効化し、デバッグ用グローバル `dd` を定義後、`require("config.lazy")` を呼ぶ。
-2. `nvim/lua/config/lazy.lua` が `stdpath("data")/lazy/lazy.nvim` に lazy.nvim を bootstrap（未インストール時のみ git clone）、`require("lazy").setup({...})` で以下を読み込む:
-   - `LazyVim/LazyVim` 本体（`import = "lazyvim.plugins"`、`colorscheme = "solarized-osaka"`）
-   - LazyVim extras: `linting.eslint`, `formatting.prettier`, `lang.typescript`, `lang.json`, `lang.rust`, `lang.tailwind`, `util.mini-hipatterns`
-   - ユーザ定義: `lua/plugins/` 配下の全 spec（`{ import = "plugins" }`）
-3. LazyVim 側が `config/options.lua` → プラグイン spec → `config/keymaps.lua` → `config/autocmds.lua` の順でロードする（LazyVim の規約）。
+1. `nvim/init.lua` が `~/.cache/dpp/` 配下の dpp 本体と各拡張（`dpp-ext-toml`, `dpp-ext-lazy`, `dpp-ext-installer`, `dpp-protocol-git`）を `runtimepath` に追加。
+2. `dpp.load_state(dppBase)` を呼ぶ:
+   - **キャッシュ有効** → `state.vim` / `startup.vim` をそのまま読み込み、プラグイン spec の再評価はスキップ（高速起動）。
+   - **キャッシュ無効** → denops を runtimepath に追加し、`User DenopsReady` autocmd で `dpp.make_state(dppBase, "~/.config/nvim/dpp.ts")` を実行してキャッシュ再生成。
+3. `BufRead`/`CursorHold`/`InsertEnter` の最初の発火で `lua/config/{keymaps,options,autocmd}.lua` を遅延 require。
+
+### 設定ファイルの分担
+
+TOML と TypeScript が対になっている箇所は、TOML が plugin spec、TS が denops 経由のランタイム設定を持つ役割分担。
+
+- `dpp.toml` — denops.vim + dpp 本体 + dpp 拡張（非 lazy ロード）。
+- `dpp.ts` — dpp の config エントリポイント。以下の順で各 TOML をロード:
+  - `dpp.toml` (lazy=false) → `dpp_lazy.toml` (lazy=true) → `lsp.toml` (lazy=true) → `ddu.toml` (lazy=false) → `ddc.toml` (lazy=true)
+- `dpp_lazy.toml` — 遅延ロードするプラグイン spec（colorscheme、treesitter、UI 系など）。大半のプラグインはここ。
+- `ddc.toml` / `ddc.ts` — 補完エンジン ddc.vim の plugin spec と TypeScript 設定。sources（`lsp`, `around`, `vsnip`, `file`, `skkeleton`）と sourceOptions を定義。
+- `ddu.toml` / `ddu.ts` — ファジーファインダ ddu.vim の設定。
+- `lsp.toml` — `neovim/nvim-lspconfig` など LSP 関連プラグインの spec。
 
 ### プラグイン追加・更新
 
-- ユーザプラグイン追加: `nvim/lua/plugins/` 配下の既存ファイル（`coding.lua`, `editor.lua`, `lsp.lua`, `treesitter.lua`, `ui.lua`, `colorscheme.lua`）の spec テーブルに追記、または新しい `*.lua` を作成し return で spec を返す。
-- LazyVim extras の増減: `config/lazy.lua` の `spec` 内の `{ import = "lazyvim.plugins.extras.*" }` を編集（`:LazyExtras` からも管理可能、結果は `lazyvim.json` に保存）。
-- 反映コマンド（lazy.nvim 標準）:
-  - `:Lazy` — UI を開く
-  - `:Lazy sync` / `:Lazy update` — 更新
-  - `:Lazy restore` — `lazy-lock.json` のバージョンに固定し直す
-- `lazy-lock.json` と `lazyvim.json` は tracked。プラグインバージョンの再現は lock ファイル経由。
-- `config/lazy.lua` の `dev.path = "~/.ghq/github.com"` により、`dev = true` な spec は ghq で clone 済みのローカルリポジトリを参照する。
+- プラグイン追加は該当する `*.toml` の `[[plugins]]` テーブルに `repo = "owner/name"` で追記（lazy ロードしたいなら `dpp_lazy.toml`、補完系なら `ddc.toml`）。
+- リポジトリ名と plugin 名が不一致な場合は `name = "..."` で明示が必要（例: `rose-pine/neovim` → `name = "rose-pine"`）。
+- 反映コマンド（`init.lua` で定義）:
+  - `:DppInstall` — 未インストールプラグインを非同期 clone。
+  - `:DppUpdate` — 全プラグイン更新。
+  - `:DppMakestate` — spec をパースし直して state.vim を再生成。
+- **TOML を書き換えただけでは反映されない**。state.vim に古い結果がキャッシュされているので、`:DppMakestate` を叩くか、`~/.cache/dpp/nvim/state.vim` を削除してから nvim を再起動すること。
+- `make_state` は denops 依存なので `DenopsReady` 後に実行される。headless で反映する場合は `autocmd User DenopsReady ++once call timer_start(N, {-> execute("qa!")})` で denops 起動と state 生成の完了を待つ必要がある。
 
 ### Lua 側の構成
 
 - `lua/config/`
-  - `lazy.lua` — lazy.nvim bootstrap + LazyVim setup。
-  - `options.lua` / `keymaps.lua` / `autocmds.lua` — LazyVim のデフォルトに対する上書き。
-- `lua/plugins/` — ユーザ追加/上書きプラグイン spec 群。
-- `lua/craftzdog/` — craftzdog の設定を参考にした補助モジュール。
-  - `discipline.lua` — `cowboy()` を `keymaps.lua` 冒頭で呼んでおり、`hjkl` 連打など「悪癖」入力に警告を出す。
-  - `hsl.lua` — `replaceHexWithHSL()`（`<leader>r`）で hex カラーを HSL 記法に置換。
-  - `lsp.lua` — `toggleInlayHints()`（`<leader>i`）と `toggleAutoformat()`（`:ToggleAutoformat`）を提供。
-- `lua/util/debug.lua` — `dd()`（= `vim.print`）のダンプ実装。
+  - `keymaps.lua` / `options.lua` / `autocmd.lua` — プラグインに依存しない基本設定。`BufRead`/`CursorHold`/`InsertEnter` の最初の発火で require される。
+- `lua/hooks/` — 個別プラグインの setup を外出ししたモジュール。TOML の `lua_source` から `require("hooks/xxx")` で呼ばれる。
+  - `deol.lua` / `insx.lua` / `lsp.lua`
 
-### keymap / autocmd の要所
+### colorscheme
 
-- `mapleader` / `maplocalleader` は LazyVim のデフォルト（スペース）。
-- `keymaps.lua` で `s` をウィンドウ操作の prefix に割り当て: `ss` 横分割、`sv` 縦分割、`sh/sj/sk/sl` でウィンドウ間移動。**通常の `s`（文字置換）は潰れている** 点に留意。
-- 他: `x` / `<Leader>p` / `<Leader>c` / `<Leader>d` を black hole レジスタ経由にしてヤンク汚染を防止、`+`/`-` で `<C-a>`/`<C-x>`、`<C-a>` で全選択、`<tab>` / `<s-tab>` でタブ移動など。
-- `autocmds.lua`: `InsertLeave` で `set nopaste`、`FileType json/jsonc/markdown` で `conceallevel=0`。
+`dpp_lazy.toml` の `rose-pine/neovim`（variant: `moon`）を使用。`autocmd.lua` の `VimEnter` で `colorscheme rose-pine` を適用。背景は `disable_background = true` で透過させ、alacritty 側の背景色（`#2a1f3d`）が見える状態。
 
-### LSP / 補完
+### キャッシュのトラブルシュート
 
-LSP セットアップは LazyVim extras（`lang.typescript`, `lang.rust`, `lang.tailwind`, `lang.json`）と `lua/plugins/lsp.lua` のユーザオーバーライドの合成で成立する。サーバ固有の細かい設定を入れるときは `lua/plugins/lsp.lua` を編集する（旧 dpp 構成の `hooks/lsp.lua` は存在しない）。補完は LazyVim 標準（blink.cmp または nvim-cmp、LazyVim バージョン依存）。
-
-補足: `lazy-lock.json` のコミットが常に最新プラグインバージョンに追随するわけではないので、環境を合わせたいときは `:Lazy restore` を挟むこと。
+- プラグインが有効化されない / 更新が反映されない → `rm ~/.cache/dpp/nvim/state.vim ~/.cache/dpp/nvim/startup.vim` で再生成を強制。
+- `vim load_state is failed` のメッセージは「キャッシュが無かったので make_state を走らせます」の意味（エラーではない）。
+- プラグイン本体は `~/.cache/dpp/repos/github.com/<owner>/<name>/` に clone される。完全にクリーンな状態にしたい場合はここを削除してから `:DppInstall`。

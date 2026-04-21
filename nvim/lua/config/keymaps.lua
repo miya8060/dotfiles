@@ -1,75 +1,81 @@
-local keymap = vim.keymap
-local opts = { noremap = true, silent = true }
+local opts = { silent = true }
+local modes = { 'n', 'v' }
+local keymap = vim.keymap.set
+vim.g.mapleader = " "
 
--- Exit insert mode with jj
-keymap.set("i", "jj", "<Esc>", opts)
 
--- Do things without affecting the registers
-keymap.set("n", "x", '"_x')
-keymap.set("n", "<Leader>p", '"0p')
-keymap.set("n", "<Leader>P", '"0P')
-keymap.set("v", "<Leader>p", '"0p')
-keymap.set("n", "<Leader>c", '"_c')
-keymap.set("n", "<Leader>C", '"_C')
-keymap.set("v", "<Leader>c", '"_c')
-keymap.set("v", "<Leader>C", '"_C')
-keymap.set("n", "<Leader>d", '"_d')
-keymap.set("n", "<Leader>D", '"_D')
-keymap.set("v", "<Leader>d", '"_d')
-keymap.set("v", "<Leader>D", '"_D')
-
--- Increment/decrement
-keymap.set("n", "+", "<C-a>")
-keymap.set("n", "-", "<C-x>")
-
--- Delete a word backwards
-keymap.set("n", "dw", 'vb"_d')
-
--- Select all
-keymap.set("n", "<C-a>", "gg<S-v>G")
-
--- Save with root permission (not working for now)
---vim.api.nvim_create_user_command('W', 'w !sudo tee > /dev/null %', {})
-
--- Disable continuations
-keymap.set("n", "<Leader>o", "o<Esc>^Da", opts)
-keymap.set("n", "<Leader>O", "O<Esc>^Da", opts)
-
--- Jumplist
-keymap.set("n", "<C-m>", "<C-i>", opts)
-
--- New tab
-keymap.set("n", "te", ":tabedit")
-keymap.set("n", "<tab>", ":tabnext<Return>", opts)
-keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
--- Split window
-keymap.set("n", "ss", ":split<Return>", opts)
-keymap.set("n", "sv", ":vsplit<Return>", opts)
--- Move window
-keymap.set("n", "sh", "<C-w>h")
-keymap.set("n", "sk", "<C-w>k")
-keymap.set("n", "sj", "<C-w>j")
-keymap.set("n", "sl", "<C-w>l")
-
--- Resize window
-keymap.set("n", "<C-w><left>", "<C-w><")
-keymap.set("n", "<C-w><right>", "<C-w>>")
-keymap.set("n", "<C-w><up>", "<C-w>+")
-keymap.set("n", "<C-w><down>", "<C-w>-")
-
--- Diagnostics
-keymap.set("n", "<C-j>", function()
-	vim.diagnostic.goto_next()
+-- keymaps
+keymap("i", "jj", "<ESC>", opts)
+keymap('c', 'jj', '<C-c>', opts)
+keymap("i", "jj", "<C-[><C-[>", opts)
+keymap("n", "<C-[><C-[>", ":noh<CR>", opts)
+keymap("n", "s", "<C-w>", opts)
+keymap("n", "ss", ":split<Return>", opts)
+keymap("n", "sv", ":vsplit<Return>", opts)
+keymap("n", "<c-p>", "{", opts)
+keymap("n", "<c-n>", "}", opts)
+keymap('n', 'te', ':tabedit', opts)
+keymap('n', '<tab>', ':tabnext<Return>', opts)
+keymap('n', '<s-tab>', ':tabprev<Return>', opts)
+keymap('n', 'sf', function()
+        local file_dir = vim.fn.expand('%:p:h')
+        local cwd = vim.fn.getcwd()
+        local search_path = file_dir ~= cwd and file_dir or cwd
+        vim.fn['ddu#start']({
+                name = 'filer',
+                searchPath = search_path
+        })
 end, opts)
 
-keymap.set("n", "<leader>r", function()
-	require("craftzdog.hsl").replaceHexWithHSL()
-end)
+keymap('n', '<leader>f', function()
+        vim.fn['ddu#start']({
+                name = 'ff',
+        })
+end, opts)
 
-keymap.set("n", "<leader>i", function()
-	require("craftzdog.lsp").toggleInlayHints()
-end)
+keymap('n', '<leader>m', function()
+        vim.fn['ddu#start']({
+                name = 'ff-mr',
+        })
+end, opts)
 
-vim.api.nvim_create_user_command("ToggleAutoformat", function()
-	require("craftzdog.lsp").toggleAutoformat()
-end, {})
+keymap('n', '<leader>b', function()
+        vim.fn['ddu#start']({
+                name = 'ff-buffer',
+        })
+end, opts)
+
+keymap('n', 'gs', function()
+        vim.fn['ddu#start']({
+                name = 'ff-git_status',
+        })
+end, opts)
+-- keymap("n", "<C-j>", "<cmd>bprev<CR>")
+-- keymap('n', '<C-k>', '<cmd>bnext<CR>')
+keymap("t", "<Esc>", [[<C-\><C-n>]])
+keymap("n", "np", "<cmd>NoNeckPain<CR>", opts)
+keymap("n", "df",
+        "<cmd>call deol#start({ 'cwd': '%'->expand()->fnamemodify(':h'), 'split': 'floating', 'floating_border': 'rounded'})<CR>",
+        opts)
+keymap("n", "db", "<cmd>call deol#start({ 'cwd': '%'->expand()->fnamemodify(':h') })<CR>", opts)
+keymap('x', 'p', 'P', opts)
+keymap('x', 'y', 'mzy`z', opts)
+keymap('x', '<', '<gv', opts)
+keymap('x', '>', '>gv', opts)
+keymap('n', 'U', '<C-r>', opts)
+
+-- Gin shortcuts
+keymap('n', 'S', '<cmd>GinStatus<CR>', opts)
+keymap('n', 'L', '<cmd>GinLog --graph --oneline<CR>', opts)
+keymap('n', 'D', '<cmd>GinDiff<CR>', opts)
+vim.api.nvim_create_autocmd("FileType", {
+        pattern = { 'gin-diff', 'gin-log', 'gin-status' },
+        callback = function()
+                local opts = { buffer = true, noremap = true }
+                keymap('n', 'c', '<cmd>Gin commit<CR>', opts)
+                keymap('n', 'q', '<cmd>bdelete<CR>', opts)
+        end
+})
+
+-- GitDiff
+keymap('n', '<Leader>d', ':GitDiff<CR>', opts)
