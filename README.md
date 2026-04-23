@@ -41,6 +41,7 @@ Git で追跡しているのは以下:
 - [Neovim](https://neovim.io/)（0.10 以降推奨）
 - [Deno](https://deno.com/)（Neovim の `denops.vim` が必須）
 - [Claude Code](https://docs.claude.com/en/docs/claude-code)
+- [macSKK](https://github.com/mtgto/macSKK)（日本語入力）
 
 ## セットアップ
 
@@ -80,6 +81,43 @@ Neovim 初回起動時に `:DppInstall` でプラグインを clone する。
 - colorscheme は `rose-pine/neovim`（variant: `moon`）。背景は透過させて alacritty の背景色を出す。
 
 ロードフロー、キャッシュのトラブルシュート、プラグイン追加手順などのより詳細な情報は [`CLAUDE.md`](./CLAUDE.md) を参照。
+
+## 日本語入力 (macSKK)
+
+macOS 全体の日本語入力には [macSKK](https://github.com/mtgto/macSKK) を使う。Nvim 内は [skkeleton](https://github.com/vim-skk/skkeleton)（`ddc.toml` で設定済み）で、それ以外のアプリは macSKK、という使い分け。
+
+sandbox アプリのため設定ファイルは `~/Library/Containers/net.mtgto.inputmethod.macSKK/Data/` 配下に置かれ、このリポジトリでは追跡しない（バイナリ plist と個人辞書が中心のため）。
+
+### セットアップ
+
+```sh
+# 1. インストール
+brew install --cask macskk
+
+# 2. 一度アプリを起動して container を生成
+open "/Library/Input Methods/macSKK.app"
+
+# 3. 辞書 (SKK-JISYO.L, EUC-JP) を配置
+DICT_DIR="$HOME/Library/Containers/net.mtgto.inputmethod.macSKK/Data/Documents/Dictionaries"
+curl -fsSL -o "$DICT_DIR/SKK-JISYO.L" \
+  "https://raw.githubusercontent.com/skk-dev/dict/master/SKK-JISYO.L"
+```
+
+その後 GUI で:
+
+1. `システム設定 → キーボード → テキスト入力 → 入力ソース → 編集 → ＋` から macSKK の「ひらがな」「ABC」を追加
+2. 入力メニューの macSKK → `環境設定 → 辞書` で `SKK-JISYO.L` を有効化（エンコーディングは EUC-JP）
+
+入力ソースが System Settings に現れない場合、Sequoia 以降の Launch Services キャッシュ問題の可能性があるので:
+
+```sh
+# Launch Services に再登録
+/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister \
+  -f "/Library/Input Methods/macSKK.app"
+killall TextInputMenuAgent TextInputSwitcher 2>/dev/null
+```
+
+それでも出なければ macOS を再起動する。
 
 ## ファイル一覧
 
