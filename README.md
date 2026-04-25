@@ -119,6 +119,66 @@ killall TextInputMenuAgent TextInputSwitcher 2>/dev/null
 
 それでも出なければ macOS を再起動する。
 
+## スマホから Claude Code に接続 (Tailscale + SSH + Termius)
+
+外出先のスマホから自宅 Mac の Claude Code を触るための構成。Tailscale で Mac とスマホを VPN で繋ぎ、Termius から SSH で入って tmux 上の `claude` を操作する。
+
+```
+[スマホ Termius] --(Tailscale VPN)--> [Mac sshd] --> tmux --> claude
+```
+
+### Mac 側のセットアップ
+
+1. **リモートログインを有効化**: システム設定 → 一般 → 共有 → リモートログイン を ON。アクセス許可ユーザーは自分だけに絞る。
+2. **Tailscale をインストール**:
+
+    ```sh
+    brew install --cask tailscale
+    ```
+
+    起動して Apple/Google アカウント等でログイン。`tailscale ip -4` で割り当てられた IP（`100.x.x.x`）を確認。
+3. **スリープ対策**: 長時間スマホから使う場合はシステム設定 → ディスプレイ → 「ディスプレイがオフのときコンピュータを自動でスリープさせない」を ON、または作業前に `caffeinate -d &`。
+
+### スマホ側のセットアップ
+
+1. **Tailscale** アプリをインストールして Mac と同じアカウントでログイン。
+2. **Termius** アプリをインストール。
+
+### SSH 鍵の作成と登録
+
+iPhone の Termius は Touch ID/Face ID と連携した Secure Enclave 鍵が一番楽（秘密鍵がデバイス外に出ない）。
+
+1. Termius → **Keychain** → 上部ツールバーの指紋アイコン → **Generate** → 名前を付けて保存。
+2. 作った鍵を開いて **Public Key** をコピー。
+3. メモ等で Mac に渡し、Mac の `~/.ssh/authorized_keys` に 1 行追記:
+
+    ```sh
+    # 末尾に "ssh-rsa AAAA... phone" を追記
+    chmod 700 ~/.ssh
+    chmod 600 ~/.ssh/authorized_keys
+    ```
+
+`+` ボタンから手動で鍵を作る経路は UI 上「Host Key」しか出ないことがあるので、上記の **Touch ID 経路** を使うのが確実。
+
+### Termius にホスト登録
+
+Termius → **Hosts** → `+` → **New Host**:
+
+- **Hostname**: Mac の Tailscale IP（`100.x.x.x`）または Tailscale マシン名
+- **Username**: Mac のユーザー名
+- **Key**: 上で作った鍵を選択
+
+### tmux で永続セッション
+
+接続が切れても作業を残すため、`claude` は tmux の中で起動する:
+
+```sh
+tmux new -A -s claude
+# このセッション内で claude を起動。離脱は prefix + d
+```
+
+Termius のホスト設定の Startup Snippet に `tmux new -A -s claude` を入れておくと、接続と同時に自動 attach できる。
+
 ## ファイル一覧
 
 ```
