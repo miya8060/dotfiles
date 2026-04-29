@@ -65,7 +65,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Glass.aiff & osascript -e 'display notification \"応答が完了しました\" with title \"Claude Code\"' 2>/dev/null; { [ -n \"$TMUX_PANE\" ] && tmux set-option -w -t \"$TMUX_PANE\" @claude_waiting 1 && tmux refresh-client -S; } 2>/dev/null; true"
+            "command": "afplay /System/Library/Sounds/Glass.aiff & osascript -e 'display notification \"応答が完了しました\" with title \"Claude Code\"' 2>/dev/null; ~/.claude/tmux-waiting.sh set 2>/dev/null; true"
           }
         ]
       }
@@ -75,7 +75,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Funk.aiff & osascript -e 'display notification \"確認が必要です\" with title \"Claude Code\"' 2>/dev/null; { [ -n \"$TMUX_PANE\" ] && tmux set-option -w -t \"$TMUX_PANE\" @claude_waiting 1 && tmux refresh-client -S; } 2>/dev/null; true"
+            "command": "afplay /System/Library/Sounds/Funk.aiff & osascript -e 'display notification \"確認が必要です\" with title \"Claude Code\"' 2>/dev/null; ~/.claude/tmux-waiting.sh set 2>/dev/null; true"
           }
         ]
       }
@@ -85,7 +85,27 @@
         "hooks": [
           {
             "type": "command",
-            "command": "{ [ -n \"$TMUX_PANE\" ] && tmux set-option -w -u -t \"$TMUX_PANE\" @claude_waiting && tmux refresh-client -S; } 2>/dev/null; true"
+            "command": "~/.claude/tmux-waiting.sh clear 2>/dev/null; true"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/tmux-waiting.sh clear 2>/dev/null; true"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/tmux-waiting.sh clear 2>/dev/null; true"
           }
         ]
       }

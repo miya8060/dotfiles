@@ -26,6 +26,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `yabai/` → `~/.config/yabai/`（ディレクトリリンク）
 - `claude/settings.json` → `~/.claude/settings.json`（ファイル単位リンク）
 - `claude/statusline.sh` → `~/.claude/statusline.sh`（ファイル単位リンク）
+- `claude/tmux-waiting.sh` → `~/.claude/tmux-waiting.sh`（ファイル単位リンク）
 
 `~/.claude/` 配下には `projects/`（会話履歴・auto-memory）、`sessions/`、`history.jsonl` など動的・機密ファイルが混在するため、ディレクトリ単位ではなく **ユーザーが手書きするファイルだけを個別リンク** する方針。
 
