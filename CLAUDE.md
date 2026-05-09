@@ -81,3 +81,5 @@ TOML と TypeScript が対になっている箇所は、TOML が plugin spec、T
 - プラグインが有効化されない / 更新が反映されない → `rm ~/.cache/dpp/nvim/state.vim ~/.cache/dpp/nvim/startup.vim` で再生成を強制。
 - `vim load_state is failed` のメッセージは「キャッシュが無かったので make_state を走らせます」の意味（エラーではない）。
 - プラグイン本体は `~/.cache/dpp/repos/github.com/<owner>/<name>/` に clone される。完全にクリーンな状態にしたい場合はここを削除してから `:DppInstall`。
+- `:DppUpdate` 後に `:DppMakestate` が `Not found ext: "toml"` (または `lazy` / `installer`) で失敗するときは、dpp ext が `*.ts` 単体ファイル → `*/main.ts` ディレクトリ構造に移行したケース。`~/.cache/dpp/nvim/.dpp/denops/@dpp-exts/` 配下の `*.ts` symlink が古いパスを指したまま壊れている。`rm -rf ~/.cache/dpp/nvim/.dpp ~/.cache/dpp/nvim/state.vim ~/.cache/dpp/nvim/startup.vim` してから再 makestate で復旧する。
+- 上記と同時に denops が `Denops requires Vim 9.1.x or Neovim 0.x.y` と警告したら nvim/deno のバージョン不足が同居している。`~/.cache/dpp/repos/github.com/vim-denops/denops.vim/denops/supported_versions.json` で要件を確認し、`brew upgrade neovim deno` で揃える。
