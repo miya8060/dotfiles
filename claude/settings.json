@@ -118,13 +118,20 @@
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
     "lua-lsp@claude-plugins-official": true,
-    "tmux-agent-sidebar@hiroppy": true
+    "tmux-agent-sidebar@hiroppy": true,
+    "claude-obsidian@claude-obsidian-marketplace": true
   },
   "extraKnownMarketplaces": {
     "hiroppy": {
       "source": {
         "source": "directory",
         "path": "/Users/yuki/.tmux/plugins/tmux-agent-sidebar"
+      }
+    },
+    "claude-obsidian-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "AgriciDaniel/claude-obsidian"
       }
     }
   },
