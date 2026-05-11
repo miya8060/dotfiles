@@ -20,7 +20,8 @@ alias la "ls -A"
 alias ll "ls -l"
 alias lla "ll -A"
 alias g git
-alias c clear
+alias c claude
+alias cl clear
 alias f ranger
 alias ..='cd ..'
 alias ...='cd ../..'
