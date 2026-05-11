@@ -80,6 +80,16 @@
         ]
       }
     ],
+    "PermissionDenied": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/tmux-waiting.sh clear 2>/dev/null; true"
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
@@ -92,11 +102,20 @@
     ],
     "PostToolUse": [
       {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/tmux-waiting.sh clear 2>/dev/null; true"
+          }
+        ]
+      },
+      {
         "matcher": "AskUserQuestion",
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/tmux-waiting.sh clear 2>/dev/null; ~/.claude/tmux-waiting.sh suppress 2>/dev/null; true"
+            "command": "~/.claude/tmux-waiting.sh suppress 2>/dev/null; true"
           }
         ]
       }
