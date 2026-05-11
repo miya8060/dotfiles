@@ -65,7 +65,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "afplay /System/Library/Sounds/Glass.aiff & osascript -e 'display notification \"応答が完了しました\" with title \"Claude Code\"' 2>/dev/null; ~/.claude/tmux-waiting.sh set 2>/dev/null; true"
+            "command": "afplay /System/Library/Sounds/Glass.aiff & osascript -e 'display notification \"応答が完了しました\" with title \"Claude Code\"' 2>/dev/null; ~/.claude/tmux-waiting.sh set-unless-suppressed 2>/dev/null; true"
           }
         ]
       }
@@ -96,7 +96,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/tmux-waiting.sh clear 2>/dev/null; true"
+            "command": "~/.claude/tmux-waiting.sh clear 2>/dev/null; ~/.claude/tmux-waiting.sh suppress 2>/dev/null; true"
           }
         ]
       }
